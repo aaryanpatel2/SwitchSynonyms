@@ -1,4 +1,5 @@
 from tkinter import *
+from collections import Counter
 
 window = Tk()
 window.geometry("300x300")
@@ -19,7 +20,7 @@ def welcome_greeting():
     global greeting
     if greeting_answer.get("1.0", "end-1c") == "c" or greeting_answer.get("1.0", "end-1c") == "C":
         Button(window, text="File Creation", command=lambda: create_file()).pack(pady=20)
-        Label(text="Enter your file below (Click File Creation to confirm selection)").pack()
+        Label(text="Enter your file below (Click file creation twice to confirm selection)").pack()
         global file_enter
         file_enter = Text(window, height=25, width=50, bg="black",)
         new_window_button = Button(window, text="Open Synonym Window", command=lambda: open_new_window()).pack(side=BOTTOM, padx=20, pady=20)
@@ -32,7 +33,6 @@ def welcome_greeting():
 
 #Creates a user dialog box where users can type in their document and
 # it will create a text file with the contents in the dialog box
-#file_enter = Text(window, height=25, width=50, bg="black", pady=20)
 
 def create_file():
     file_enter.pack()
@@ -47,15 +47,7 @@ def create_file():
 def find_syn():
     file_create = open("synonymswitch.txt", 'r')
     words = file_create.read()
-    #print(words)
     words_list = words.split(" ")
-    #print(words_list)
-    word_frame = Frame(syn_window).pack(pady=20)
-
-    for word in words_list:
-        Label(syn_window, word_frame, text = "● " + word).pack()
-
-    syn_list = []
 
     danger_words = ["the", "a", "an"]
 
@@ -63,18 +55,31 @@ def find_syn():
         if word in danger_words:
             words_list.remove(word)
 
-    print(words_list)
 
-    for i in range(len(words_list)):
-        if words_list[i] == words_list[i-1]:
-            syn_list.append(words_list[i])
+    global syn_list
+    syn_list = []
 
-    print(syn_list)
+    for word in words_list:
+        syn_list.append(word)
 
-    Label(syn_window, text = "Here are your most used words").pack(pady=40)
+    most_used_word_list = Counter(syn_list)
+
+    global most_used_word
+    count = 0
+    for i in most_used_word_list:
+        if most_used_word_list[i] > count:
+            count = most_used_word_list[i]
+            most_used_word = i
+        else:
+            most_used_word = "Every word appears once :)"
+            syn_window.after(3000, lambda:syn_window.destroy())
+
+    file_create.close()
+
+
+    Label(syn_window, text = "Here is your most used word").pack(pady=30)
     syn_frame = Frame(syn_window).pack(pady=20)
-    for synonym in syn_list:
-        Label(syn_window, syn_frame, text = "● " + synonym).pack()
+    Label(syn_window, syn_frame, text = "• " + most_used_word).pack()
 
 
 
