@@ -1,5 +1,6 @@
 from tkinter import *
-from collections import Counter
+from collections import defaultdict
+import webbrowser
 
 window = Tk()
 window.geometry("300x300")
@@ -57,22 +58,18 @@ def find_syn():
 
 
     global syn_list
-    syn_list = []
+    temp = defaultdict(int)
 
-    for word in words_list:
-        syn_list.append(word)
-
-    most_used_word_list = Counter(syn_list)
+    for words in words_list:
+        for word in words.split():
+            temp[word] += 1
 
     global most_used_word
-    count = 0
-    for i in most_used_word_list:
-        if most_used_word_list[i] > count:
-            count = most_used_word_list[i]
-            most_used_word = i
-        else:
-            most_used_word = "Every word appears once :)"
-            syn_window.after(3000, lambda:syn_window.destroy())
+    most_used_word = max(temp, key=temp.get)
+
+    if words_list.count(most_used_word) == 1:
+        most_used_word = "Every word appears once :)"
+        syn_window.after(3000, lambda:syn_window.destroy())
 
     file_create.close()
 
@@ -80,6 +77,7 @@ def find_syn():
     Label(syn_window, text = "Here is your most used word").pack(pady=30)
     syn_frame = Frame(syn_window).pack(pady=20)
     Label(syn_window, syn_frame, text = "• " + most_used_word).pack()
+    Button(syn_window, text= "Open Thesaurus.com", command=lambda: open_thesarus()).pack(pady=60)
 
 
 
@@ -89,6 +87,15 @@ def open_new_window():
     syn_window.title("SynonymSwitch")
     syn_window.geometry("300x300")
     Button(syn_window, text="Find Synonym", command=lambda: find_syn()).pack(pady=20)
+
+def open_thesarus():
+    global thesaurus_win
+    thesaurus_win = Toplevel(syn_window)
+    thesaurus_win.geometry("800x450")
+    url = 'https://www.thesaurus.com/browse/' + most_used_word
+    webbrowser.open(url)
+
+
 
 
 mainloop()
