@@ -1,10 +1,12 @@
 from tkinter import *
 from collections import defaultdict
 import webbrowser
+from bs4 import BeautifulSoup
+import requests
 
 window = Tk()
 window.geometry("300x300")
-#TODO ADD AT END: window.attributes('-fullscreen', True)
+window.state('zoomed')
 window.title(" SwitchSynonyms ")
 
 
@@ -21,9 +23,9 @@ def welcome_greeting():
     global greeting
     if greeting_answer.get("1.0", "end-1c") == "c" or greeting_answer.get("1.0", "end-1c") == "C":
         Button(window, text="File Creation", command=lambda: create_file()).pack(pady=20)
-        Label(text="Enter your file below (Click file creation twice to confirm selection)").pack()
+        Label(text="Enter your file below (Click File Creation Again When Done)").pack()
         global file_enter
-        file_enter = Text(window, height=25, width=50, bg="black",)
+        file_enter = Text(window, height=25, width=100, bg="black",)
         new_window_button = Button(window, text="Open Synonym Window", command=lambda: open_new_window()).pack(side=BOTTOM, padx=20, pady=20)
     elif greeting_answer.get("1.0", "end-1c") == "q" or greeting_answer.get("1.0", "end-1c") == "Q":
         quit()
@@ -49,13 +51,177 @@ def find_syn():
     file_create = open("synonymswitch.txt", 'r')
     words = file_create.read()
     words_list = words.split(" ")
+    words = words.replace("!", "")
+    words_list = [words.lower() for words in words_list]
 
-    danger_words = ["the", "a", "an"]
+
+    danger_words = ["the", "a", "an", "what"]
 
     for word in list(words_list):
         if word in danger_words:
             words_list.remove(word)
 
+    for word in list(words_list):
+        if "!" in word:
+            new_word = word.replace("!", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "@" in word:
+            new_word = word.replace("@", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "?" in word:
+            new_word = word.replace("?", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "." in word:
+            new_word = word.replace(".", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if ";'" in word:
+            new_word = word.replace(";", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "," in word:
+            new_word = word.replace(",", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if ":" in word:
+            new_word = word.replace(":", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "\"" in word:
+            new_word = word.replace("\"", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "'" in word:
+            new_word = word.replace("'", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "$" in word:
+            new_word = word.replace("$", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "%" in word:
+            new_word = word.replace("%", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "&" in word:
+            new_word = word.replace("&", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "(" in word:
+            new_word = word.replace("(", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if ")" in word:
+            new_word = word.replace(")", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "{" in word:
+            new_word = word.replace("{", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "}" in word:
+            new_word = word.replace("}", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "]" in word:
+            new_word = word.replace("]", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "[" in word:
+            new_word = word.replace("[", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "\\" in word:
+            new_word = word.replace("\\", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "/" in word:
+            new_word = word.replace("/", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "`" in word:
+            new_word = word.replace("`", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "~" in word:
+            new_word = word.replace("~", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "*" in word:
+            new_word = word.replace("*", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "_" in word:
+            new_word = word.replace("_", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "_" in word:
+            new_word = word.replace("-", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if "<" in word:
+            new_word = word.replace("<", "")
+            words_list.append(new_word)
+            words_list.remove(word)
+
+    for word in list(words_list):
+        if ">" in word:
+            new_word = word.replace(">", "")
+            words_list.append(new_word)
+            words_list.remove(word)
 
     global syn_list
     temp = defaultdict(int)
@@ -75,9 +241,11 @@ def find_syn():
 
 
     Label(syn_window, text = "Here is your most used word").pack(pady=30)
-    syn_frame = Frame(syn_window).pack(pady=20)
+    syn_frame = Frame(syn_window).pack()
     Label(syn_window, syn_frame, text = "• " + most_used_word).pack()
-    Button(syn_window, text= "Open Thesaurus.com", command=lambda: open_thesarus()).pack(pady=60)
+    Label(syn_window, syn_frame, text="").pack()
+    thesaurus_button = Button(syn_window, text= "Open Thesaurus.com", command=lambda: open_thesaurus())
+    thesaurus_button.place(x = 670, y = 600)
 
 
 
@@ -86,16 +254,36 @@ def open_new_window():
     syn_window = Toplevel(window)
     syn_window.title("SynonymSwitch")
     syn_window.geometry("300x300")
-    Button(syn_window, text="Find Synonym", command=lambda: find_syn()).pack(pady=20)
+    Button(syn_window, text="Find Synonym", command=lambda: [find_syn(), webscrape()]).pack(pady=20)
 
-def open_thesarus():
+def open_thesaurus():
     global thesaurus_win
     thesaurus_win = Toplevel(syn_window)
     thesaurus_win.geometry("800x450")
     url = 'https://www.thesaurus.com/browse/' + most_used_word
     webbrowser.open(url)
 
+def webscrape():
+    url = 'https://www.thesaurus.com/browse/' + most_used_word
+    result = requests.get(url)
+    file = BeautifulSoup(result.text, "html.parser")
+    synonyms = file.find_all('li')
+    syn_list = []
+    for tag in synonyms:
+        syn_list.append(tag.get_text())
 
+    account_index = syn_list.index("Account")
+    hash_index = syn_list.index("#")
+
+    new_list = syn_list[account_index + 1: hash_index]
+
+    Label(syn_window, text="Try These Synonyms from Thesaurus.com").pack()
+
+    list_display = Text(syn_window, height=25, width=50, bg="black")
+    list_display.pack(pady=10)
+
+    for syn in new_list:
+        list_display.insert(END, syn + "\n")
 
 
 mainloop()
